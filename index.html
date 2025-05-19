@@ -127,14 +127,6 @@
             text-align: center;
             margin: 12px 0 20px;
         }
-#howToUseTitle {
-  display: block;
-  position: relative;
-  opacity: 1;
-  color: var(--main-color);
-  margin: 15px 0;
-  z-index: 10;
-}
         
         .app-title {
             font-size: 2.5rem;
@@ -200,7 +192,7 @@
             align-items: center;
             position: relative;
             padding: 0 30px;
-           
+            min-height: 3.5rem; /* To avoid layout shift if text is empty initially */
         }
         
         .edit-dhikr {
@@ -320,7 +312,19 @@
         .welcome-modal {
             text-align: center;
         }
-        
+        .welcome-modal-lang-switcher {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+        .welcome-modal-lang-switcher .btn {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+         .welcome-modal-lang-switcher .btn.selected {
+            background-color: var(--secondary-color);
+            color: var(--bg-color);
+        }
+
         .dhikr-options {
             display: flex;
             flex-direction: column;
@@ -389,11 +393,11 @@
         .section-title {
             margin: 1px 0 8px;
             color: var(--main-color);
-            font-size: .5.rem;
+            font-size: 1.5rem; 
         }
         
         .terms-text {
-            max-height: 120px;
+            max-height: 250px; /* Increased height for full policy */
             overflow-y: auto;
             padding: 8px;
             background-color: rgba(0,0,0,0.05);
@@ -401,7 +405,37 @@
             margin: 8px 0;
             text-align: start;
             font-size: 0.9rem;
+            line-height: 1.6;
         }
+        .terms-text h3, .terms-text h4 { /* Style policy headings */
+            color: var(--main-color);
+            margin-top: 10px;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        .terms-text p {
+            margin-bottom: 8px;
+        }
+        .terms-text ul {
+            list-style-position: inside;
+            padding-right: 20px; /* For RTL */
+            margin-bottom: 8px;
+        }
+        [dir="ltr"] .terms-text ul {
+            padding-right: 0;
+            padding-left: 20px;
+        }
+        .terms-text li {
+            margin-bottom: 4px;
+        }
+        .terms-text a {
+            color: var(--main-color);
+            text-decoration: none;
+        }
+        .terms-text a:hover {
+            text-decoration: underline;
+        }
+
         
         input[type="text"] {
             width: 100%;
@@ -428,7 +462,7 @@
             }
             
             .counter-value {
-                font-size: 2.2rem;
+                font-size: 2.15rem;
             }
             
             .dhikr-text {
@@ -461,93 +495,83 @@
                 font-size: 1.2rem;
             }
         }
-#welcomeText {
-    color: red;
-    font-size: 18px; /* يمكنك تغيير حجم الخط حسب ما تفضل */
-    font-weight: bold;
-}
+        #welcomeText { 
+            /* color: var(--text-color); Removed specific color to allow span styling */
+            font-size: 1rem; 
+            font-weight: normal; 
+            margin-bottom: 10px; 
+            line-height: 1.5;
+        }
 
-#welcomeText1 {
-    color: red;
-    font-size: 15px; /* يمكنك تغيير حجم الخط حسب ما تفضل */
-    font-weight: bold;
-}
+        #infoWelcomeText1 { 
+            color: var(--text-color);
+            font-size: 1rem; 
+            font-weight: normal;
+        }
 
+        #infoWelcomeText2 { 
+            color: var(--main-color);
+            font-size: 1rem; 
+            font-weight: bold;
+        }
 
-#welcomeText2 {
-    color: green;
-    font-size: 15.3px; /* يمكنك تغيير حجم الخط حسب ما تفضل */
-    font-weight: bold;
-}
-
-
-#contactText1 {
-    color: green;
-    font-size: 15.3px; /* يمكنك تغيير حجم الخط حسب ما تفضل */
-    font-weight: bold;
-}
+        #infoContactText1 { 
+            color: var(--text-color);
+            font-size: 1rem; 
+            font-weight: normal;
+        }
+        #infoContactText1 a {
+            color: var(--main-color);
+        }
     </style>
 </head>
 <body>
-    <!-- أشكال طائرة في الخلفية -->
+    <!-- Floating Shapes -->
     <div class="floating-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
+        <div class="shape"></div><div class="shape"></div><div class="shape"></div><div class="shape"></div>
     </div>
     
-    <!-- نافذة الترحيب -->
+    <!-- Welcome Modal -->
     <div class="modal" id="welcomeModal">
         <div class="modal-content welcome-modal">
-            <h2 class="section-title" id="welcomeTitle">مرحباً بكم في تطبيق مليار تسبيحة</h2>
-            <p id="welcomeText">هذا التطبيق يساعدك على تسبيح الله تعالى والمقصود بالمليار الكثرة لا التقييد بالعدد لقوله تعالى</p>
-            <h3 class="section-title">شروط الاستخدام</h3>
-            <div class="terms-text">
-                <p id="termsText2">1. لا نجمع أي بيانات شخصية عن المستخدمين</p>
-                <p id="termsText3">3. جميع الإعدادات تحفظ على جهازك فقط</p>
-                <p id="termsText4">4. يمكنك إعادة التعيين في أي وقت</p>
-                <p id="termsText5">5. التطبيق للأغراض الدينية فقط</p>
+            <div id="welcomeTermsSection">
+                <div class="welcome-modal-lang-switcher">
+                    <button class="btn" id="welcomeLangAr">العربية</button>
+                    <button class="btn" id="welcomeLangEn">English</button>
+                </div>
+                <h2 class="section-title" id="welcomeTitle">مرحباً بكم في تطبيق مليار تسبيحة</h2>
+                <p id="welcomeText">هذا التطبيق يساعدك على تسبيح الله تعالى...</p>
+                <h3 class="section-title" id="welcomeTermsTitle">سياسة الخصوصية والشروط</h3>
+                <div class="terms-text" id="welcomePolicyContent">
+                    <!-- Policy content will be injected by JavaScript -->
+                </div>
+                <button class="btn" id="acceptBtn">أوافق على الشروط</button>
+                <button class="btn btn-secondary" id="declineBtn">رفض</button>
             </div>
-            
-            <button class="btn" id="acceptBtn">أوافق على الشروط</button>
-            <button class="btn btn-secondary" id="declineBtn">رفض</button>
+            <div id="initialDhikrSelectionSection" style="display: none;">
+                <h2 class="section-title" id="initialDhikrTitle">اختر الذكر الذي ستردده</h2>
+                <div class="dhikr-options" id="initialDhikrOptionsContainer"></div>
+                <p style="font-size: 0.8rem; margin-top: 10px;" id="canChangeLaterText">يمكنك تغيير الذكر لاحقًا.</p>
+            </div>
         </div>
     </div>
     
-    <!-- التطبيق الرئيسي -->
+    <!-- Main App -->
     <div class="app-container">
-        <!-- عنوان التطبيق -->
-        <div class="app-header">
-            <h1 class="app-title" id="appTitle">مليار تسبيحة</h1>
-        </div>
-        
-        <!-- شريط الأدوات العلوي -->
+        <div class="app-header"><h1 class="app-title" id="appTitle">مليار تسبيحة</h1></div>
         <div class="toolbar">
             <button class="theme-btn" id="themeBtn">🌙</button>
             <button class="lang-btn" id="langBtn">🌐</button>
         </div>
-        
-        <!-- منطقة العداد -->
-        <div class="counter-container">
-            <div class="counter-value" id="counter">1,000,000,000</div>
-        </div>
-        
-        <!-- منطقة الذكر -->
+        <div class="counter-container"><div class="counter-value" id="counter">1,000,000,000</div></div>
         <div class="dhikr-section">
             <div class="dhikr-text">
                 <span class="edit-dhikr" id="editDhikr">✏️</span>
-                <span id="currentDhikr">سُبْحَانَ اللَّهِ</span>
+                <span id="currentDhikr"></span>
             </div>
-            
             <button class="main-button" id="mainButton">اضغط للذكر</button>
-            
-            <div class="progress-container">
-                <div class="progress-bar" id="progressBar"></div>
-            </div>
+            <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
         </div>
-        
-        <!-- شريط الإعدادات -->
         <div class="settings-bar">
             <button class="settings-btn" id="soundBtn">🔊</button>
             <button class="settings-btn" id="vibrationBtn">📳</button>
@@ -556,26 +580,24 @@
         </div>
     </div>
     
-    <!-- نافذة اختيار الذكر -->
+    <!-- Dhikr Modal (General) -->
     <div class="modal" id="dhikrModal">
         <div class="modal-content">
             <h2 class="section-title" id="chooseDhikrTitle">اختر الذكر</h2>
-            <div class="dhikr-options">
-                <!-- Dhikr options will be populated by JavaScript -->
-            </div>
+            <div class="dhikr-options"></div>
             <div style="margin-top: 15px; margin-bottom: 10px;">
-                <input type="text" id="customDhikrInput" placeholder="أدخل الذكر هنا..." style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 10px; font-family: 'Tajawal', sans-serif;">
+                <input type="text" id="customDhikrInput" placeholder="أدخل الذكر هنا...">
                 <button class="btn" id="addCustomDhikrBtn" style="width: 100%;">إضافة ذكر مخصص</button>
             </div>
             <button class="btn" id="closeDhikrModalBtn" style="width: 100%;">إغلاق</button>
         </div>
     </div>
     
-    <!-- نافذة اللغة -->
+    <!-- Language Modal -->
     <div class="modal" id="langModal">
         <div class="modal-content">
             <h2 class="section-title" id="chooseLangTitle">اختر اللغة</h2>
-            <div class="dhikr-options">
+            <div class="dhikr-options"> 
                 <div class="lang-option selected" data-lang="ar">العربية</div>
                 <div class="lang-option" data-lang="en">English</div>
             </div>
@@ -583,60 +605,53 @@
         </div>
     </div>
     
-    <!-- نافذة المعلومات -->
+    <!-- Info Modal -->
     <div class="modal" id="infoModal">
         <div class="modal-content">
-            <h3 class="section-title" <h3 class="section-title" id="termsTitle">مليار تسبيحة</h3>
-            <p id="welcomeText1"> هذا التطبيق يساعدك على تسبيح الله تعالى والمقصود بالمليار الكثرة لا التقييد بالعدد لقوله تعالى</p>
-<p id="welcomeText2"> (الذاكرين اللَّهَ كَثِيرًا وَالذَّاكِرَاتِ أَعَدَّ اللَّهُ لَهُم مَّغْفِرَةً وَأَجْرًا عَظِيمًا)</p>
-            <h3 class="section-title" <h3 class="section-title" id="termsTitle">شروط الاستخدام</h3>
-            <p id="usageText1">1. اضغط على الزر الرئيسي لكل تسبيحة</p>
-            <p id="usageText2">2. اضغط على ✏️  لتغيير الذكر</p>
-            <p id="usageText3">3. استخدم الأزرار السفلية للتحكم بالإعدادات</p>
-            <p id="usageText4">4. عند الانتهاء من المليار، سيتم إعادة العداد تلقائياً</p>
-            
-            <h3 class="section-title" <h3 class="section-title" id="termsTitle">سياسة الخصوصية</h3>
-            <p id="privacyText1">- لا نجمع أي بيانات شخصية</p>
-            <p id="privacyText2">- جميع الإعدادات تحفظ على جهازك فقط</p>
-            <p id="privacyText3">- لا نستخدم أي أدوات تتبع</p>
-            
-            <h3 class="section-title" <h3 class="section-title" id="termsTitle">تواصل معنا</h3>
-            <p id="contactText1">للاقتراحات أو الاستفسارات: BillionTasbeeh@proton.me
-           
+            <h3 class="section-title" id="infoAppTitle">مليار تسبيحة</h3>
+            <p id="infoWelcomeText1">هذا التطبيق يساعدك على تسبيح الله تعالى...</p>
+            <p id="infoWelcomeText2">(الذاكرين اللَّهَ كَثِيرًا وَالذَّاكِرَاتِ...)</p>
+            <h3 class="section-title" id="infoUsageTitle">طريقة الاستخدام</h3>
+            <p id="infoUsageP1">1. اضغط على الزر الرئيسي.</p><p id="infoUsageP2">2. اضغط ✏️ لتغيير الذكر.</p>
+            <p id="infoUsageP3">3. استخدم الأزرار السفلية للإعدادات.</p><p id="infoUsageP4">4. عند المليار، يعاد العداد.</p>
+            <h3 class="section-title" id="infoPrivacyTitle">سياسة الخصوصية</h3>
+            <!-- MODIFIED: Replaced p tags with a div for full policy -->
+            <div class="terms-text" id="infoModalPolicyContent" style="max-height: 150px;">
+                <!-- Policy content will be injected by JavaScript -->
+            </div>
+            <h3 class="section-title" id="infoContactTitle">تواصل معنا</h3>
+            <p id="infoContactText1">للاقتراحات: Billionapp@proton.me</p>
             <button class="btn" id="closeInfoBtn" style="width: 100%; margin-top: 15px;">إغلاق</button>
         </div>
     </div>
     
-    <!-- أصوات التسبيح -->
-    <audio id="clickSound" preload="auto">
-        <source src="https://audio.jukehost.co.uk/ruYoswMwfnS91z2dYrPsRKQ7kTkYpjDS" type="audio/mpeg">
-    </audio>
-    
-    <audio id="resetSound" preload="auto">
-        <source src="https://audio.jukehost.co.uk/4gI1qQlmcopXf0oqiHE3mnabYsL9T4j8" type="audio/mpeg">
-    </audio>
-    
-    <audio id="completeSound" preload="auto">
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-positive-interface-beep-221.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="clickSound" preload="auto"><source src="https://audio.jukehost.co.uk/ruYoswMwfnS91z2dYrPsRKQ7kTkYpjDS" type="audio/mpeg"></audio>
+    <audio id="resetSound" preload="auto"><source src="https://audio.jukehost.co.uk/4gI1qQlmcopXf0oqiHE3mnabYsL9T4j8" type="audio/mpeg"></audio>
+    <audio id="completeSound" preload="auto"><source src="https://assets.mixkit.co/sfx/preview/mixkit-positive-interface-beep-221.mp3" type="audio/mpeg"></audio>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // العناصر الرئيسية
+            console.log("DOM Loaded. Initializing Billion Tasbeeh App."); // DEBUG
             const counterElement = document.getElementById('counter');
             const mainButton = document.getElementById('mainButton');
             const currentDhikrElement = document.getElementById('currentDhikr');
             const progressBar = document.getElementById('progressBar');
             
-            // عناصر الصوت
             const clickSound = document.getElementById('clickSound');
             const resetSound = document.getElementById('resetSound');
             const completeSound = document.getElementById('completeSound');
             
-            // عناصر النوافذ
             const welcomeModal = document.getElementById('welcomeModal');
             const acceptBtn = document.getElementById('acceptBtn');
             const declineBtn = document.getElementById('declineBtn');
+            const welcomeLangArBtn = document.getElementById('welcomeLangAr');
+            const welcomeLangEnBtn = document.getElementById('welcomeLangEn');
+            const welcomeTermsSection = document.getElementById('welcomeTermsSection');
+            const initialDhikrSelectionSection = document.getElementById('initialDhikrSelectionSection');
+            const initialDhikrOptionsContainer = document.getElementById('initialDhikrOptionsContainer');
+            const initialDhikrTitle = document.getElementById('initialDhikrTitle'); 
+            const canChangeLaterText = document.getElementById('canChangeLaterText'); 
+            const welcomePolicyContent = document.getElementById('welcomePolicyContent');
             
             const dhikrModal = document.getElementById('dhikrModal');
             const customDhikrInput = document.getElementById('customDhikrInput');
@@ -645,7 +660,6 @@
             const langModal = document.getElementById('langModal');
             const infoModal = document.getElementById('infoModal');
             
-            // أزرار الإعدادات
             const soundBtn = document.getElementById('soundBtn');
             const vibrationBtn = document.getElementById('vibrationBtn');
             const resetBtn = document.getElementById('resetBtn');
@@ -654,202 +668,253 @@
             const themeBtn = document.getElementById('themeBtn');
             const langBtn = document.getElementById('langBtn');
             
-            // عناصر النصوص للترجمة
-            const textElements = {
-                appTitle: document.getElementById('appTitle'),
-                mainButton: document.getElementById('mainButton'),
-                welcomeTitle: document.getElementById('welcomeTitle'),
-                welcomeText: document.getElementById('welcomeText'),
-                termsText1: document.getElementById('termsText1'),
-                termsText2: document.getElementById('termsText2'),
-                termsText3: document.getElementById('termsText3'),
-                termsText4: document.getElementById('termsText4'),
-                termsText5: document.getElementById('termsText5'),
-                acceptBtn: document.getElementById('acceptBtn'),
-                declineBtn: document.getElementById('declineBtn'),
-                chooseDhikrTitle: document.getElementById('chooseDhikrTitle'),
-                chooseLangTitle: document.getElementById('chooseLangTitle'),
-                appInfoTitle: document.getElementById('appInfoTitle'),
-                howToUseTitle: document.getElementById('howToUseTitle'),
-                usageText1: document.getElementById('usageText1'),
-                usageText2: document.getElementById('usageText2'),
-                usageText3: document.getElementById('usageText3'),
-                usageText4: document.getElementById('usageText4'),
-                privacyTitle: document.getElementById('privacyTitle'),
-                privacyText1: document.getElementById('privacyText1'),
-                privacyText2: document.getElementById('privacyText2'),
-                privacyText3: document.getElementById('privacyText3'),
-                contactTitle: document.getElementById('contactTitle'),
-                contactText1: document.getElementById('contactText'),
-                closeButtons: document.querySelectorAll('.btn:not(#acceptBtn):not(#declineBtn)')
+            const textElementIds = {
+                appTitle: 'appTitle', mainButtonText: 'mainButton', 
+                welcomeTitle: 'welcomeTitle', welcomeText: 'welcomeText', welcomeTermsTitle: 'welcomeTermsTitle',
+                welcomePolicyContent: 'welcomePolicyContent', 
+                acceptBtnText: 'acceptBtn', declineBtnText: 'declineBtn',
+                initialDhikrTitle: 'initialDhikrTitle', canChangeLaterText: 'canChangeLaterText', 
+                chooseDhikrTitle: 'chooseDhikrTitle', customDhikrInputPlaceholder: 'customDhikrInput', 
+                addCustomDhikrBtnText: 'addCustomDhikrBtn', closeDhikrModalBtnText: 'closeDhikrModalBtn',
+                chooseLangTitle: 'chooseLangTitle', closeLangBtnText: 'closeLangBtn',
+                infoAppTitle: 'infoAppTitle', infoWelcomeText1: 'infoWelcomeText1', infoWelcomeText2: 'infoWelcomeText2',
+                infoUsageTitle: 'infoUsageTitle', infoUsageP1: 'infoUsageP1', infoUsageP2: 'infoUsageP2', infoUsageP3: 'infoUsageP3', infoUsageP4: 'infoUsageP4',
+                infoPrivacyTitle: 'infoPrivacyTitle', 
+                infoModalPolicyContent: 'infoModalPolicyContent', // ADDED for Info Modal policy
+                infoContactTitle: 'infoContactTitle', infoContactText1: 'infoContactText1', closeInfoBtnText: 'closeInfoBtn',
             };
             
-            // إعدادات التطبيق
+            let welcomeModalLanguage = 'ar';
+
             const appSettings = {
-                count: 1000000000,
-                soundEnabled: true,
-                vibrationEnabled: true,
-                darkMode: false,
+                count: 1000000000, soundEnabled: true, vibrationEnabled: true, darkMode: false,
                 language: 'ar',
-                dhikr: "سُبْحَانَ اللَّهِ",
-                dhikrList: [
-                    "سُبْحَانَ اللَّهِ",
-                    "الْحَمْدُ لِلَّهِ", 
-                    "اللَّهُ أَكْبَرُ",
-                    "لَا إِلَهَ إِلَّا اللَّهُ",
-                    "أَسْتَغْفِرُ اللَّهَ"
-                ],translations: {
+                dhikr: null, 
+                dhikrInitialChoiceMade: false, 
+                dhikrList: ["DHIKR_SUBHANALLAH", "DHIKR_ALHAMDULILLAH", "DHIKR_ALLAHUAKBAR", "DHIKR_LAILAHAILLALLAH", "DHIKR_ASTAGHFIRULLAH"],
+                translations: {
                     ar: {
-                        appTitle: "مليار تسبيحة",
-                        mainButton: "اضغط للذكر",
+                        appTitle: "مليار تسبيحة", mainButtonText: "اضغط للذكر",
                         welcomeTitle: "مرحباً بكم في تطبيق مليار تسبيحة",
-                        welcomeText: "هذا التطبيق يساعدك على تسبيح الله تعالى والمقصود بالمليار الكثرة لا التقييد بالعدد لقوله تعالى (الذاكرين اللَّهَ كَثِيرًا وَالذَّاكِرَاتِ أَعَدَّ اللَّهُ لَهُم مَّغْفِرَةً وَأَجْرًا عَظِيمًا) فوجب التنبيه  ",
-                        termsText1: "1. هذا التطبيق مجاني ولا يهدف للربح",
-                        termsText2: "2. لا نجمع أي بيانات شخصية عن المستخدمين",
-                        termsText3: "3. جميع الإعدادات تحفظ على جهازك فقط",
-                        termsText4: "4. يمكنك إعادة التعيين في أي وقت",
-                        termsText5: "5. التطبيق للأغراض الدينية فقط",
-                        acceptBtn: "أوافق على الشروط",
-                        declineBtn: "رفض",
-                        chooseDhikr: "اختر الذكر",
-                        addCustomDhikrPlaceholder: "أدخل الذكر هنا...",
-                        addCustomDhikrBtn: "إضافة ذكر مخصص",
-                        chooseLang: "اختر اللغة",
-                        appInfo: "مليار تسبيحة",
-                        howToUse: "طريقة الاستخدام",
-                        usageText1: "1. اضغط على الزر الرئيسي لكل تسبيحة",
-                        usageText2: "2. اضغط على ✏️ لتغيير الذكر",
-                        usageText3: "3. استخدم الأزرار السفلية للتحكم بالإعدادات",
-                        usageText4: "4. عند الانتهاء من المليار، سيتم إعادة العداد تلقائياً",
-                        privacy: "سياسة الخصوصية",
-                        privacyText1: "- لا نجمع أي بيانات شخصية",
-                        privacyText2: "- جميع الإعدادات تحفظ على جهازك فقط",
-                        privacyText3: "- لا نستخدم أي أدوات تتبع",
-                        contact: "تواصل معنا",
-                        contactText: "للاقتراحات أو الاستفسارات: BillionTasbeeh@proton.me",
-                        close: "إغلاق",
-                        resetConfirm: "هل تريد إعادة العداد إلى مليار؟",
-                        congrats: "مبروك! لقد أكملت مليار تسبيحة!"
+                        // MODIFIED: Added span with red color
+                        welcomeText: "<span style='color: red;'>هذا التطبيق يساعدك على تسبيح الله تعالى والمقصود بالمليار الكثرة لا التقييد بالعدد لقوله تعالى (الذَّاكِرِينَ اللَّهَ كَثِيرًا وَالذَّاكِرَاتِ أَعَدَّ اللَّهُ لَهُم مَّغْفِرَةً وَأَجْرًا عَظِيمًا) [الأحزاب:35]. وجب التنبيه.</span>",
+                        welcomeTermsTitle: "سياسة الخصوصية والشروط",
+                        welcomeFullPolicyText: `
+                            <h3>سياسة الخصوصية لتطبيق "مليار تسبيحة"</h3>
+                            <p><em>آخر تحديث: 10 يونيو 2024</em></p>
+                            <p>مرحباً بكم في تطبيق <strong>"مليار تسبيحة"</strong>. نحن نقدر خصوصيتكم ونلتزم بحماية بياناتكم. توضح هذه السياسة كيف نتعامل مع أي معلومات يتم جمعها من خلال التطبيق.</p>
+                            <h4>1. المعلومات التي نجمعها</h4>
+                            <p>تطبيق <strong>"مليار تسبيحة"</strong> <strong>لا يجمع أي بيانات شخصية</strong>، مثل:</p>
+                            <ul><li>الاسم، البريد الإلكتروني، رقم الهاتف</li><li>بيانات GPS أو الموقع</li><li>معرفات الجهاز (IMEI، عنوان IP)</li></ul>
+                            <p>ومع ذلك، قد نستخدم خدمات طرف ثالث مثل <strong>Google AdMob</strong> (للإعلانات)، والتي قد تجمع <strong>بيانات غير شخصية</strong> للتحليلات وتخصيص الإعلانات. يتم ذلك وفقًا لسياسات Google الخاصة.</p>
+                            <h4>2. كيف نستخدم المعلومات</h4>
+                            <p>أي بيانات غير شخصية يتم جمعها بواسطة خدمات الطرف الثالث (مثل AdMob) قد تُستخدم:</p>
+                            <ul><li>لتحسين أداء التطبيق وتحديد المشاكل.</li><li>لعرض إعلانات ذات صلة (إذا كان التطبيق يحتوي على إعلانات مستقبلاً).</li></ul>
+                            <p>التطبيق نفسه لا يستخدم أي بيانات لأغراض أخرى.</p>
+                            <h4>3. مشاركة البيانات مع أطراف ثالثة</h4>
+                            <p>نحن <strong>لا نبيع أو نشارك</strong> أي بيانات يمكن أن تحدد هويتك الشخصية مع جهات خارجية، لأننا لا نجمعها أصلاً. البيانات التي تجمعها خدمات الطرف الثالث مثل Google AdMob تخضع لسياسات الخصوصية الخاصة بهم.</p>
+                            <ul><li><strong>مقدمو الخدمات:</strong> مثل Google AdMob (لتحليلات الإعلانات وعرضها).</li><li><strong>المتطلبات القانونية:</strong> قد نكشف عن معلومات إذا طُلب منا ذلك بموجب القانون.</li></ul>
+                            <h4>4. تخزين البيانات</h4>
+                            <ul><li>لا يتم تخزين أي بيانات شخصية من قبل التطبيق.</li><li>إعدادات التطبيق (مثل عدد التسبيحات، اختيار الذكر، إعدادات الصوت والاهتزاز، اللغة، الوضع الداكن) يتم حفظها <strong>محليًا على جهازك فقط</strong> باستخدام تخزين الويب المحلي (LocalStorage). هذه البيانات لا تُنقل إلى أي خادم.</li></ul>
+                            <h4>5. حقوقك</h4>
+                            <ul><li>بما أننا لا نجمع بيانات شخصية، فلا توجد بيانات شخصية لتطلب الوصول إليها أو تصحيحها أو حذفها من جانبنا.</li><li>يمكنك <strong>إلغاء تثبيت التطبيق</strong> في أي وقت لإزالة جميع الإعدادات المخزنة محليًا على جهازك.</li><li>يمكنك مسح بيانات التصفح لموقع الويب هذا (إذا كنت تستخدمه كـ PWA) لإزالة البيانات المخزنة محليًا.</li><li>لأية مخاوف تتعلق بالخصوصية، أو إذا كانت لديك أسئلة حول كيفية تعامل خدمات الطرف الثالث مع بياناتك، يمكنك الاتصال بنا وسنوجهك قدر الإمكان أو يمكنك مراجعة سياساتهم مباشرة.</li></ul>
+                            <h4>6. أمان البيانات</h4>
+                            <p>نحن نتخذ تدابير معقولة لحماية المعلومات المخزنة محليًا على جهازك من الوصول أو الاستخدام أو الكشف غير المصرح به، على الرغم من أنه لا يمكن لأي نظام أن يكون آمنًا تمامًا.</p>
+                            <h4>7. خصوصية الأطفال</h4>
+                            <p>التطبيق مخصص لجمهور عام ولا يستهدف الأطفال الذين تقل أعمارهم عن 13 عامًا (أو السن المكافئ في الولاية القضائية ذات الصلة). نحن لا نجمع معلومات شخصية عن علم من الأطفال.</p>
+                            <h4>8. تغييرات السياسة</h4>
+                            <p>قد نقوم بتحديث هذه السياسة من وقت لآخر. سيتم نشر أي تغييرات على هذه الصفحة مع تاريخ "آخر تحديث" معدل. نشجعك على مراجعة سياسة الخصوصية هذه بشكل دوري.</p>
+                            <h4>9. اتصل بنا</h4>
+                            <p>إذا كانت لديك أي أسئلة حول سياسة الخصوصية هذه:</p>
+                            < <p>📧 البريد الإلكتروني: Billionapp@proton.me</p>
+                            
+                        `,
+                        acceptBtnText: "أوافق على الشروط", declineBtnText: "رفض",
+                        initialDhikrTitle: "اختر الذكر الذي ستردده", canChangeLaterText: "يمكنك تغيير الذكر لاحقًا من الإعدادات.",
+                        chooseDhikrTitle: "اختر الذكر", customDhikrInputPlaceholder: "أدخل الذكر هنا...", addCustomDhikrBtnText: "إضافة ذكر مخصص", closeDhikrModalBtnText: "إغلاق",
+                        chooseLangTitle: "اختر اللغة", closeLangBtnText: "إغلاق",
+                        infoAppTitle: "مليار تسبيحة", infoWelcomeText1: "هذا التطبيق يساعدك على تسبيح الله تعالى، والمقصود بالمليار الكثرة.", infoWelcomeText2: "(الذَّاكِرِينَ اللَّهَ كَثِيرًا وَالذَّاكِرَاتِ...)",
+                        infoUsageTitle: "طريقة الاستخدام", infoUsageP1: "1. اضغط على الزر الرئيسي لكل تسبيحة.", infoUsageP2: "2. اضغط على ✏️ لتغيير الذكر.",
+                        infoUsageP3: "3. استخدم الأزرار السفلية للتحكم بالإعدادات.", infoUsageP4: "4. عند الانتهاء من المليار، سيتم إعادة العداد تلقائياً.",
+                        infoPrivacyTitle: "سياسة الخصوصية", // Title for policy in Info Modal
+                        infoContactTitle: "تواصل معنا", infoContactText1: "للاقتراحات أو الاستفسارات: <Billionapp@proton.me\">Billionapp@proton.me</a>", closeInfoBtnText: "إغلاق",
+                        resetConfirm: "هل تريد إعادة العداد إلى مليار؟", congrats: "مبارك! لقد أكملت مليار تسبيحة!",
+                        dhikrExists: "الذكر موجود بالفعل!", enterValidDhikr: "الرجاء إدخال ذكر صحيح.", mustAcceptTerms: "عذراً، يجب الموافقة على الشروط لاستخدام التطبيق.",
+                        DHIKR_SUBHANALLAH: "سُبْحَانَ اللَّهِ", DHIKR_ALHAMDULILLAH: "الْحَمْدُ لِلَّهِ", DHIKR_ALLAHUAKBAR: "اللَّهُ أَكْبَرُ",
+                        DHIKR_LAILAHAILLALLAH: "لَا إِلَهَ إِلَّا اللَّهُ", DHIKR_ASTAGHFIRULLAH: "أَسْتَغْفِرُ اللَّهَ"
                     },
                     en: {
-                        appTitle: "Billion Tasbeeh",
-                        mainButton: "Press for Dhikr",
+                        appTitle: "Billion Tasbeeh", mainButtonText: "Press for Dhikr",
                         welcomeTitle: "Welcome to Billion Tasbeeh",
-                        welcomeText: "This app helps you remember Allah by counting your dhikr until you reach one billion",
-                        termsText1: "1. This app is free and not for profit",
-                        termsText2: "2. We don't collect any personal data",
-                        termsText3: "3. All settings are saved on your device only",
-                        termsText4: "4. You can reset at any time",
-                        termsText5: "5. The app is for religious purposes only",
-                        acceptBtn: "I Accept the Terms",
-                        declineBtn: "Decline",
-                        chooseDhikr: "Choose Dhikr",
-                        addCustomDhikrPlaceholder: "Enter custom dhikr...",
-                        addCustomDhikrBtn: "Add Custom Dhikr",
-                        chooseLang: "Choose Language",
-                        appInfo: "Billion Tasbeeh",
-                        howToUse: "How to Use",
-                        usageText1: "1. Press the main button for each dhikr",
-                        usageText2: "2. Press ✏️ to change dhikr",
-                        usageText3: "3. Use bottom buttons for settings",
-                        usageText4: "4. When you reach one billion, counter will reset automatically",
-                        privacy: "Privacy Policy",
-                        privacyText1: "- We don't collect personal data",
-                        privacyText2: "- All settings saved on your device only",
-                        privacyText3: "- We don't use any tracking tools",
-                        contact: "Contact Us",
-                        contactText1: "For suggestions or inquiries: BillionTasbeeh@proton.me",
-                        close: "Close",
-                        resetConfirm: "Reset counter to one billion?",
-                        congrats: "Congratulations! You've completed one billion dhikr!"
+                        // MODIFIED: Added span with red color
+                        welcomeText: "<span style='color: red;'>This app helps you in the remembrance of Allah. The term 'Billion' (مليار) signifies abundance, not a strict numerical target, inspired by the Quranic emphasis on remembering Allah often: (Indeed, the men who remember Allah often and the women who do so - for them Allah has prepared forgiveness and a great reward) [Al-Ahzab 33:35]. This is for clarification.</span>",
+                        welcomeTermsTitle: "Privacy Policy and Terms",
+                        welcomeFullPolicyText: `
+                            <h3>Privacy Policy for "Billion Tasbeeh" App</h3>
+                            <p><em>Last Updated: June 10, 2024</em></p>
+                            <p>Welcome to <strong>"Billion Tasbeeh"</strong> (in Arabic: "مليار تسبيحة"). We value your privacy and are committed to protecting your data. This policy explains how we handle any information collected through the app.</p>
+                            <h4>1. Information We Collect</h4>
+                            <p>The <strong>"Billion Tasbeeh"</strong> app <strong>does NOT collect any personal data</strong>, such as:</p>
+                            <ul><li>Name, email, phone number</li><li>GPS or location data</li><li>Device identifiers (IMEI, IP address)</li></ul>
+                            <p>However, we may use third-party services like <strong>Google AdMob</strong> (for ads), which may collect <strong>non-personal data</strong> for analytics and ad personalization according to Google's own policies.</p>
+                            <h4>2. How We Use Information</h4>
+                            <p>Any non-personal data collected by third-party services (like AdMob) may be used:</p>
+                            <ul><li>To improve app performance and identify issues.</li><li>To display relevant ads (if the app incorporates ads in the future).</li></ul>
+                            <p>The app itself does not use any data for other purposes.</p>
+                            <h4>3. Data Sharing with Third Parties</h4>
+                            <p>We <strong>do not sell or share</strong> any personally identifiable information with external parties, because we do not collect it in the first place. Data collected by third-party services like Google AdMob is subject to their respective privacy policies.</p>
+                            <ul><li><strong>Service Providers:</strong> Such as Google AdMob (for ad analytics and serving).</li><li><strong>Legal Requirements:</strong> We may disclose information if required by law.</li></ul>
+                            <h4>4. Data Storage</h4>
+                            <ul><li>No personal data is stored by the app.</li><li>App settings (such as tasbeeh counts, selected Dhikr, sound/vibration settings, language, dark mode) are saved <strong>locally on your device only</strong> using Web LocalStorage. This data is not transmitted to any server.</li></ul>
+                            <h4>5. Your Rights</h4>
+                            <ul><li>As we do not collect personal data, there is no personal data for you to access, correct, or delete from our side.</li><li>You can <strong>uninstall the app</strong> at any time to remove all locally stored settings on your device.</li><li>You can clear browsing data for this website (if using as a PWA) to remove locally stored data.</li><li>For any privacy concerns, or if you have questions about how third-party services handle your data, you can contact us, and we will guide you as best as possible, or you can review their policies directly.</li></ul>
+                            <h4>6. Data Security</h4>
+                            <p>We take reasonable measures to protect information stored locally on your device from unauthorized access, use, or disclosure, although no system can be completely secure.</p>
+                            <h4>7. Children's Privacy</h4>
+                            <p>The app is intended for a general audience and does not target children under the age of 13 (or the equivalent age in the relevant jurisdiction). We do not knowingly collect personal information from children.</p>
+                            <h4>8. Policy Changes</h4>
+                            <p>We may update this policy from time to time. Any changes will be posted on this page with a revised "Last Updated" date. We encourage you to review this Privacy Policy periodically.</p>
+                            <h4>9. Contact Us</h4>
+                            <p>If you have any questions about this Privacy Policy:</p>
+                            <p>📧 Email: Billionapp@proton.me</p>
+                          
+                        `,
+                        acceptBtnText: "I Accept the Terms", declineBtnText: "Decline",
+                        initialDhikrTitle: "Choose the Dhikr you will recite", canChangeLaterText: "You can change the Dhikr later from settings.",
+                        chooseDhikrTitle: "Choose Dhikr", customDhikrInputPlaceholder: "Enter custom dhikr...", addCustomDhikrBtnText: "Add Custom Dhikr", closeDhikrModalBtnText: "Close",
+                        chooseLangTitle: "Choose Language", closeLangBtnText: "Close",
+                        infoAppTitle: "Billion Tasbeeh", infoWelcomeText1: "This app helps you in the remembrance of Allah, 'Billion' signifies abundance.", infoWelcomeText2: "(Indeed, the men who remember Allah often...)",
+                        infoUsageTitle: "How to Use", infoUsageP1: "1. Press the main button for each tasbeeh.", infoUsageP2: "2. Press ✏️ to change the Dhikr.",
+                        infoUsageP3: "3. Use the bottom buttons to control settings.", infoUsageP4: "4. When one billion is completed, the counter will reset automatically.",
+                        infoPrivacyTitle: "Privacy Policy", // Title for policy in Info Modal
+                        infoContactTitle: "Contact Us", infoContactText1: "For suggestions or inquiries: <a :Billionapp@proton.me\">Billionapp@proton.me</a>", closeInfoBtnText: "Close",
+                        resetConfirm: "Are you sure you want to reset the counter to one billion?", congrats: "Congratulations! You have completed one billion tasbeehs!",
+                        dhikrExists: "Dhikr already exists!", enterValidDhikr: "Please enter a valid dhikr.", mustAcceptTerms: "Sorry, you must accept the terms to use the app.",
+                        DHIKR_SUBHANALLAH: "SubhanAllah", DHIKR_ALHAMDULILLAH: "Alhamdulillah", DHIKR_ALLAHUAKBAR: "Allahu Akbar",
+                        DHIKR_LAILAHAILLALLAH: "La ilaha illAllah", DHIKR_ASTAGHFIRULLAH: "Astaghfirullah"
                     }
                 },
                 welcomeShown: false
             };
-            
-            // تحميل الإعدادات المحفوظة
-            function loadSettings() {
-                const savedSettings = localStorage.getItem('tasbeehSettings');
-                if(savedSettings) {
-                    const settings = JSON.parse(savedSettings);
-                    Object.assign(appSettings, settings);
+
+            function getDisplayDhikr(dhikrIdentifier, lang) {
+                const currentLangTranslations = appSettings.translations[lang];
+                if (currentLangTranslations && currentLangTranslations[dhikrIdentifier]) {
+                    return currentLangTranslations[dhikrIdentifier];
                 }
-                
-                // تطبيق الإعدادات
+                return dhikrIdentifier;
+            }
+
+            function loadSettings() {
+                console.log("loadSettings: Attempting to load settings from localStorage."); // DEBUG
+                const savedSettings = localStorage.getItem('tasbeehSettings');
+                if (savedSettings) {
+                    console.log("loadSettings: Found saved settings:", savedSettings); // DEBUG
+                    const settings = JSON.parse(savedSettings);
+                    appSettings.count = settings.count !== undefined ? settings.count : 1000000000;
+                    appSettings.soundEnabled = settings.soundEnabled !== undefined ? settings.soundEnabled : true;
+                    appSettings.vibrationEnabled = settings.vibrationEnabled !== undefined ? settings.vibrationEnabled : true;
+                    appSettings.darkMode = settings.darkMode !== undefined ? settings.darkMode : false;
+                    appSettings.language = settings.language || 'ar';
+                    appSettings.dhikr = settings.dhikr || null;
+                    appSettings.dhikrInitialChoiceMade = settings.dhikrInitialChoiceMade || false;
+
+                    const defaultDhikrKeys = ["DHIKR_SUBHANALLAH", "DHIKR_ALHAMDULILLAH", "DHIKR_ALLAHUAKBAR", "DHIKR_LAILAHAILLALLAH", "DHIKR_ASTAGHFIRULLAH"];
+                    if (settings.dhikrList) {
+                        appSettings.dhikrList = [...new Set([...defaultDhikrKeys, ...settings.dhikrList.filter(d => !defaultDhikrKeys.includes(d) || typeof d === 'string')])];
+                    } else {
+                        appSettings.dhikrList = defaultDhikrKeys;
+                    }
+                    if (appSettings.dhikr && !appSettings.dhikrInitialChoiceMade) { 
+                        appSettings.dhikrInitialChoiceMade = true; 
+                        console.log("loadSettings: Marked dhikrInitialChoiceMade as true for compatibility."); 
+                    }
+                    if (appSettings.dhikrInitialChoiceMade && appSettings.dhikr === null) { 
+                        console.warn("loadSettings: dhikrInitialChoiceMade is true, but dhikr is null. Forcing re-selection."); 
+                        appSettings.dhikrInitialChoiceMade = false; 
+                    }
+                    appSettings.welcomeShown = settings.welcomeShown || false;
+                } else {
+                    console.log("loadSettings: No saved settings found. Using defaults."); 
+                }
+
+                console.log("loadSettings: Final pre-load state: welcomeShown =", appSettings.welcomeShown, "dhikrInitialChoiceMade =", appSettings.dhikrInitialChoiceMade, "dhikr =", appSettings.dhikr, "language =", appSettings.language); 
+
+                welcomeModalLanguage = appSettings.language;
                 updateCounter();
-                updateDhikrDisplay();
                 updateSettingsButtons();
                 applyTheme();
-                applyLanguage();
-                
-                // عرض نافذة الترحيب إذا لم تظهر من قبل
-                if(!appSettings.welcomeShown) {
+                applyLanguage(); // This will also apply language to welcome modal if shown
+
+                if (!appSettings.welcomeShown || !appSettings.dhikrInitialChoiceMade) {
+                    console.log("loadSettings: Welcome modal conditions met. Displaying welcomeModal."); 
                     welcomeModal.style.display = 'flex';
+                     applyWelcomeModalLanguage(welcomeModalLanguage); // Ensure welcome modal text is set
+                    if (appSettings.welcomeShown && !appSettings.dhikrInitialChoiceMade) {
+                        console.log("loadSettings: Terms accepted, but no initial dhikr. Showing dhikr selection."); 
+                        showInitialDhikrSelection();
+                    } else {
+                        console.log("loadSettings: Showing terms section."); 
+                        welcomeTermsSection.style.display = 'block';
+                        initialDhikrSelectionSection.style.display = 'none';
+                    }
+                } else if (appSettings.dhikr) {
+                     console.log("loadSettings: Welcome process complete. Updating Dhikr display with:", appSettings.dhikr); 
+                     updateDhikrDisplay();
+                } else {
+                    console.warn("loadSettings: Welcome complete but no dhikr set. This should ideally not happen."); 
                 }
             }
-            
-            // حفظ الإعدادات
+
             function saveSettings() {
+                console.log("saveSettings: Saving settings to localStorage:", JSON.stringify(appSettings)); 
                 localStorage.setItem('tasbeehSettings', JSON.stringify(appSettings));
             }
-            
-            // تحديث العداد
+
             function updateCounter() {
                 const formattedCount = appSettings.count.toLocaleString();
                 counterElement.textContent = formattedCount;
                 const progress = ((1000000000 - appSettings.count) / 1000000000) * 100;
                 progressBar.style.width = progress + '%';
-                
-                // تغيير لون الرقم عند نقاط معينة
                 let counterColor;
                 if (appSettings.count <= 0) {
                     counterColor = '#27ae60';
-                    showCompletionMessage();
-                } else if (appSettings.count <= 100000000) {
-                    counterColor = '#e74c3c';
-                } else if (appSettings.count <= 500000000) {
-                    counterColor = '#f39c12';
-                } else if (appSettings.count <= 900000000) {
-                    counterColor = '#3498db';
-                } else {
-                    counterColor = appSettings.darkMode ? '#ecf0f1' : '#2c3e50';
-                }
+                    if (!document.body.classList.contains('completed-message-shown')) {
+                        showCompletionMessage();
+                        document.body.classList.add('completed-message-shown');
+                    }
+                } else if (appSettings.count <= 100000000) counterColor = '#e74c3c';
+                else if (appSettings.count <= 500000000) counterColor = '#f39c12';
+                else if (appSettings.count <= 900000000) counterColor = '#3498db';
+                else counterColor = appSettings.darkMode ? 'var(--counter-color)' : 'var(--counter-color)';
                 counterElement.style.color = counterColor;
             }
-            
-            // عرض رسالة الإكمال
+
             function showCompletionMessage() {
-                if(appSettings.soundEnabled) {
-                    completeSound.currentTime = 0;
-                    completeSound.play();
-                }
-                
+                if (appSettings.soundEnabled) { completeSound.currentTime = 0; completeSound.play(); }
                 alert(appSettings.translations[appSettings.language].congrats);
-                
-                // إعادة التعيين التلقائي
                 setTimeout(() => {
-                    appSettings.count = 1000000000;
-                    updateCounter();
-                    saveSettings();
+                    appSettings.count = 1000000000; updateCounter(); saveSettings();
+                    document.body.classList.remove('completed-message-shown');
                 }, 2000);
             }
             
-            // تحديث عرض الذكر
             function updateDhikrDisplay() {
-                currentDhikrElement.textContent = appSettings.dhikr;
+                console.log("updateDhikrDisplay: Updating. Current appSettings.dhikr:", appSettings.dhikr, "Language:", appSettings.language); 
+                if (appSettings.dhikr) {
+                    currentDhikrElement.textContent = getDisplayDhikr(appSettings.dhikr, appSettings.language);
+                } else {
+                    currentDhikrElement.textContent = appSettings.translations[appSettings.language].chooseDhikrTitle || "Choose Dhikr"; 
+                    console.log("updateDhikrDisplay: No dhikr selected, showing placeholder."); 
+                }
                 
-                // مسح الخيارات الحالية
                 dhikrOptionsContainer.innerHTML = '';
-                
-                // إنشاء وإضافة خيارات الذكر من القائمة
-                appSettings.dhikrList.forEach(dhikrValue => {
+                appSettings.dhikrList.forEach(dhikrId => {
                     const option = document.createElement('div');
                     option.classList.add('dhikr-option');
-                    option.dataset.dhikr = dhikrValue;
-                    option.textContent = dhikrValue;
-                    if (dhikrValue === appSettings.dhikr) {
-                        option.classList.add('selected');
-                    }
+                    option.dataset.dhikr = dhikrId;
+                    option.textContent = getDisplayDhikr(dhikrId, appSettings.language);
+                    if (dhikrId === appSettings.dhikr) option.classList.add('selected');
                     option.addEventListener('click', function() {
                         selectDhikr(this.dataset.dhikr);
                         dhikrModal.style.display = 'none';
@@ -857,230 +922,243 @@
                     dhikrOptionsContainer.appendChild(option);
                 });
             }
-            
-            // تطبيق اللغة
-            function applyLanguage() {
-                const lang = appSettings.translations[appSettings.language];
-                
-                // تحديث جميع النصوص
-                for (const [key, element] of Object.entries(textElements)) {
-                    if (Array.isArray(element)) {
-                        element.forEach(el => {
-                            if(el) el.textContent = lang[key];
+
+            function populateInitialDhikrOptions() {
+                console.log("populateInitialDhikrOptions called. Current welcome modal language:", welcomeModalLanguage); 
+                initialDhikrOptionsContainer.innerHTML = '';
+                const currentLang = welcomeModalLanguage; 
+                const trans = appSettings.translations[currentLang];
+
+                if (initialDhikrTitle) initialDhikrTitle.textContent = trans.initialDhikrTitle;
+                if (canChangeLaterText) canChangeLaterText.textContent = trans.canChangeLaterText;
+
+                appSettings.dhikrList.forEach(dhikrId => {
+                    if (dhikrId.startsWith("DHIKR_")) { 
+                        const option = document.createElement('div');
+                        option.classList.add('dhikr-option');
+                        option.dataset.dhikr = dhikrId;
+                        option.textContent = getDisplayDhikr(dhikrId, currentLang);
+                        option.addEventListener('click', function() {
+                            console.log("Initial Dhikr option clicked:", this.dataset.dhikr); 
+                            appSettings.dhikr = this.dataset.dhikr;
+                            appSettings.dhikrInitialChoiceMade = true;
+                            appSettings.welcomeShown = true; 
+                            appSettings.language = welcomeModalLanguage;
+                            saveSettings();
+                            applyLanguage(); 
+                            welcomeModal.style.display = 'none';
+                            console.log("Initial Dhikr selected. Welcome modal closed. App language set to:", appSettings.language); 
+                            playClickSound();
                         });
-                    } else if (element) {
-                        element.innerHTML = lang[key]; // Use innerHTML for elements that might contain <br>
+                        initialDhikrOptionsContainer.appendChild(option);
                     }
-                }
-                // Translate dynamic elements
-                if (customDhikrInput) {
-                    customDhikrInput.placeholder = lang.addCustomDhikrPlaceholder || "أدخل الذكر هنا...";
-                }
-                if (addCustomDhikrBtn) {
-                    addCustomDhikrBtn.textContent = lang.addCustomDhikrBtn || "إضافة ذكر مخصص";
-                }
-                if (document.getElementById('closeDhikrModalBtn')) {
-                    document.getElementById('closeDhikrModalBtn').textContent = lang.close || "إغلاق";
-                }
-                 if (document.getElementById('closeLangBtn')) {
-                    document.getElementById('closeLangBtn').textContent = lang.close || "إغلاق";
-                }
-                if (document.getElementById('closeInfoBtn')) {
-                    document.getElementById('closeInfoBtn').textContent = lang.close || "إغلاق";
-                }
-
-
-                // تحديث خيارات اللغة المحددة
-                document.querySelectorAll('.lang-option').forEach(option => {
-                    option.classList.toggle('selected', option.dataset.lang === appSettings.language);
                 });
             }
-            
-            // تطبيق الوضع الليلي/النهاري
-            function applyTheme() {
-                if(appSettings.darkMode) {
-                    document.documentElement.setAttribute('data-theme', 'dark');
-                    themeBtn.textContent = '☀️';
-                } else {
-                    document.documentElement.removeAttribute('data-theme');
-                    themeBtn.textContent = '🌙';
+
+            function showInitialDhikrSelection() {
+                console.log("showInitialDhikrSelection called. welcomeModalLanguage:", welcomeModalLanguage); 
+                applyWelcomeModalLanguage(welcomeModalLanguage);
+                populateInitialDhikrOptions();
+                welcomeTermsSection.style.display = 'none';
+                initialDhikrSelectionSection.style.display = 'block';
+                console.log("Initial Dhikr Selection Section should be visible now."); 
+            }
+
+            function applyLanguage() {
+                console.log("applyLanguage: Applying language:", appSettings.language); 
+                const lang = appSettings.language;
+                const trans = appSettings.translations[lang];
+                document.documentElement.lang = lang;
+                document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+                for (const key in textElementIds) {
+                    const elId = textElementIds[key];
+                    const el = document.getElementById(elId);
+                    if (el && trans[key] !== undefined) {
+                        if (key.endsWith('Placeholder')) {
+                            el.placeholder = trans[key];
+                        } else if (elId === 'welcomePolicyContent') { 
+                            el.innerHTML = trans.welcomeFullPolicyText; // Use the full policy text key
+                        } else if (elId === 'infoModalPolicyContent') { // MODIFIED: Handle info modal policy
+                            el.innerHTML = trans.welcomeFullPolicyText; // Reuse the same full policy text
+                        } else if (['BUTTON', 'SPAN', 'H1', 'H2', 'H3', 'P'].includes(el.tagName) || key.endsWith('Text')) {
+                             if (['welcomeText', 'infoWelcomeText1', 'infoWelcomeText2', 'infoContactText1', 'initialDhikrTitle', 'canChangeLaterText'].includes(elId) || key === 'welcomeText') {
+                                el.innerHTML = trans[key];
+                            } else {
+                                el.textContent = trans[key];
+                            }
+                        }
+                    } else if (el && elId === 'welcomePolicyContent' && trans.welcomeFullPolicyText) { // Fallback for welcomePolicyContent if key doesn't match but translation exists
+                         el.innerHTML = trans.welcomeFullPolicyText;
+                    } else if (el && elId === 'infoModalPolicyContent' && trans.welcomeFullPolicyText) { // Fallback for infoModalPolicyContent
+                         el.innerHTML = trans.welcomeFullPolicyText;
+                    }
                 }
+                updateDhikrDisplay(); 
+                document.querySelectorAll('.lang-option').forEach(opt => opt.classList.toggle('selected', opt.dataset.lang === lang));
+                
+                if (welcomeModal.style.display === 'flex') {
+                     applyWelcomeModalLanguage(appSettings.language); 
+                     if (initialDhikrSelectionSection.style.display === 'block') { 
+                        console.log("applyLanguage: Initial dhikr selection visible, re-populating options."); 
+                        populateInitialDhikrOptions(); 
+                    }
+                }
+            }
+
+            function applyWelcomeModalLanguage(lang) {
+                console.log("applyWelcomeModalLanguage: Setting welcome modal language to:", lang); 
+                welcomeModalLanguage = lang; 
+                const trans = appSettings.translations[lang];
+                const modalContent = welcomeModal.querySelector('.modal-content');
+                if (modalContent) { 
+                    modalContent.lang = lang;
+                    modalContent.dir = lang === 'ar' ? 'rtl' : 'ltr';
+                }
+
+                if (document.getElementById('welcomeTitle')) document.getElementById('welcomeTitle').textContent = trans.welcomeTitle;
+                if (document.getElementById('welcomeText')) document.getElementById('welcomeText').innerHTML = trans.welcomeText; // Uses innerHTML due to span
+                if (document.getElementById('welcomeTermsTitle')) document.getElementById('welcomeTermsTitle').textContent = trans.welcomeTermsTitle;
+                if (welcomePolicyContent) welcomePolicyContent.innerHTML = trans.welcomeFullPolicyText;
+
+                if (document.getElementById('acceptBtn')) document.getElementById('acceptBtn').textContent = trans.acceptBtnText;
+                if (document.getElementById('declineBtn')) document.getElementById('declineBtn').textContent = trans.declineBtnText;
+                
+                if (initialDhikrTitle) initialDhikrTitle.textContent = trans.initialDhikrTitle;
+                if (canChangeLaterText) canChangeLaterText.textContent = trans.canChangeLaterText;
+
+                if (welcomeLangArBtn && welcomeLangEnBtn) {
+                    welcomeLangArBtn.classList.toggle('selected', lang === 'ar');
+                    welcomeLangEnBtn.classList.toggle('selected', lang === 'en');
+                }
+            }
+
+            function applyTheme() {
+                document.documentElement.setAttribute('data-theme', appSettings.darkMode ? 'dark' : '');
+                themeBtn.textContent = appSettings.darkMode ? '☀️' : '🌙';
                 updateCounter();
             }
-            
-            // تشغيل صوت النقرة
+
             function playClickSound() {
-                if(appSettings.soundEnabled) {
-                    clickSound.currentTime = 0;
-                    clickSound.play().catch(e => console.log("Cannot play sound:", e));
-                }
+                if (appSettings.soundEnabled) { clickSound.currentTime = 0; clickSound.play().catch(e => console.warn("No sound", e)); }
             }
-            
-            // تفعيل/تعطيل الصوت
-            function toggleSound() {
-                appSettings.soundEnabled = !appSettings.soundEnabled;
-                updateSettingsButtons();
-                playClickSound();
-                saveSettings();
-            }
-            
-            // تفعيل/تعطيل الاهتزاز
+            function toggleSound() { appSettings.soundEnabled = !appSettings.soundEnabled; updateSettingsButtons(); playClickSound(); saveSettings(); }
             function toggleVibration() {
-                appSettings.vibrationEnabled = !appSettings.vibrationEnabled;
-                updateSettingsButtons();
-                if (appSettings.vibrationEnabled && navigator.vibrate) {
-                    navigator.vibrate(50);
-                }
+                appSettings.vibrationEnabled = !appSettings.vibrationEnabled; updateSettingsButtons();
+                if (appSettings.vibrationEnabled && navigator.vibrate) navigator.vibrate(50);
                 saveSettings();
             }
+            function toggleTheme() { appSettings.darkMode = !appSettings.darkMode; applyTheme(); saveSettings(); playClickSound(); }
             
-            // تبديل الوضع الليلي/النهاري
-            function toggleTheme() {
-                appSettings.darkMode = !appSettings.darkMode;
-                applyTheme();
-                saveSettings();
-                playClickSound();
-            }
-            
-            // تغيير اللغة
             function changeLanguage(lang) {
+                console.log("changeLanguage: Changing app language to:", lang); 
                 appSettings.language = lang;
-                applyLanguage();
+                applyLanguage(); 
                 saveSettings();
                 playClickSound();
             }
-            
-            // تحديث أزرار الإعدادات
+
             function updateSettingsButtons() {
                 soundBtn.textContent = appSettings.soundEnabled ? '🔊' : '🔇';
                 vibrationBtn.textContent = appSettings.vibrationEnabled ? '📳' : '📴';
             }
-            
-            // إعادة التعيين
+
             function resetCounter() {
-                const confirmText = appSettings.translations[appSettings.language].resetConfirm;
-                if(confirm(confirmText)) {
-                    appSettings.count = 1000000000;
-                    updateCounter();
-                    if (appSettings.vibrationEnabled && navigator.vibrate) {
-                        navigator.vibrate(100);
-                    }
-                    if(appSettings.soundEnabled) {
-                        resetSound.currentTime = 0;
-                        resetSound.play();
-                    }
+                if (confirm(appSettings.translations[appSettings.language].resetConfirm)) {
+                    appSettings.count = 1000000000; updateCounter();
+                    if (appSettings.vibrationEnabled && navigator.vibrate) navigator.vibrate(100);
+                    if (appSettings.soundEnabled) { resetSound.currentTime = 0; resetSound.play(); }
                     saveSettings();
                 }
             }
-            
-            // اختيار الذكر
-            function selectDhikr(dhikr) {
-                appSettings.dhikr = dhikr;
+
+            function selectDhikr(dhikrId) {
+                console.log("selectDhikr: Selecting dhikr:", dhikrId); 
+                appSettings.dhikr = dhikrId;
+                if (!appSettings.dhikrInitialChoiceMade) appSettings.dhikrInitialChoiceMade = true; 
                 updateDhikrDisplay();
                 saveSettings();
                 playClickSound();
             }
-            
-            // أحداث الأزرار
+
             mainButton.addEventListener("click", function() {
+                if (!appSettings.dhikr) { 
+                    console.warn("Main button clicked, but no dhikr selected. Opening selection modal."); 
+                    alert(appSettings.translations[appSettings.language].chooseDhikrTitle);
+                    editDhikrBtn.click(); 
+                    return;
+                }
                 if (appSettings.count > 0) {
-                    appSettings.count--;
-                    updateCounter();
-                    playClickSound();
-                    
-         
-                    // اهتزاز الجهاز إذا كان مفعلاً
-                    if (appSettings.vibrationEnabled && navigator.vibrate) {
-                        navigator.vibrate(30);
-                    }
-                    
+                    appSettings.count--; updateCounter(); playClickSound();
+                    if (appSettings.vibrationEnabled && navigator.vibrate) navigator.vibrate(30);
                     saveSettings();
+                } else {
+                    if (!document.body.classList.contains('completed-message-shown')) showCompletionMessage();
                 }
             });
 
-            if (addCustomDhikrBtn) {
-                addCustomDhikrBtn.addEventListener("click", function() {
-                    const newDhikr = customDhikrInput.value.trim();
-                    if (newDhikr && !appSettings.dhikrList.includes(newDhikr)) {
+            addCustomDhikrBtn.addEventListener("click", function() {
+                const newDhikr = customDhikrInput.value.trim();
+                if (newDhikr) {
+                    const isPredefinedKey = !!appSettings.translations[appSettings.language][newDhikr];
+                    const alreadyExists = appSettings.dhikrList.includes(newDhikr) || (isPredefinedKey && appSettings.dhikrList.includes(newDhikr));
+                    if (!alreadyExists && !isPredefinedKey) {
                         appSettings.dhikrList.push(newDhikr);
-                        selectDhikr(newDhikr); // Optionally select the new Dhikr
-                        updateDhikrDisplay(); // Refresh the list in the modal
-                        saveSettings();
-                        customDhikrInput.value = ""; // Clear input
-                        // dhikrModal.style.display = "none"; // Optionally close modal after adding
-                    } else if (newDhikr && appSettings.dhikrList.includes(newDhikr)){
-                        alert(appSettings.language === "ar" ? "الذكر موجود بالفعل!" : "Dhikr already exists!");
-                    } else {
-                        alert(appSettings.language === "ar" ? "الرجاء إدخال ذكر صحيح." : "Please enter a valid dhikr.");
-                    }
-                    playClickSound();
-                });
-            }
-            
+                        selectDhikr(newDhikr); customDhikrInput.value = "";
+                    } else if (alreadyExists || isPredefinedKey) alert(appSettings.translations[appSettings.language].dhikrExists);
+                } else alert(appSettings.translations[appSettings.language].enterValidDhikr);
+                playClickSound();
+            });
+
             soundBtn.addEventListener("click", toggleSound);
             vibrationBtn.addEventListener("click", toggleVibration);
             resetBtn.addEventListener("click", resetCounter);
-            infoBtn.addEventListener("click", function() {
-                infoModal.style.display = "flex";
-                playClickSound();
-            });
-            
-            editDhikrBtn.addEventListener("click", function() {
-                updateDhikrDisplay(); // Ensure list is up-to-date when opening
-                dhikrModal.style.display = "flex";
-                playClickSound();
-            });
-            
+            infoBtn.addEventListener("click", () => { infoModal.style.display = "flex"; playClickSound(); });
+            editDhikrBtn.addEventListener("click", () => { updateDhikrDisplay(); dhikrModal.style.display = "flex"; playClickSound(); });
             themeBtn.addEventListener("click", toggleTheme);
-            langBtn.addEventListener("click", function() {
-                langModal.style.display = "flex";
-                playClickSound();
+            langBtn.addEventListener("click", () => { langModal.style.display = "flex"; playClickSound(); });
+
+            if (welcomeLangArBtn) welcomeLangArBtn.addEventListener('click', () => { 
+                console.log("Welcome Lang AR clicked"); 
+                applyWelcomeModalLanguage('ar'); 
+                if (initialDhikrSelectionSection.style.display === 'block') populateInitialDhikrOptions(); 
             });
-            
-            // أحداث نافذة الترحيب
+            if (welcomeLangEnBtn) welcomeLangEnBtn.addEventListener('click', () => { 
+                console.log("Welcome Lang EN clicked"); 
+                applyWelcomeModalLanguage('en'); 
+                if (initialDhikrSelectionSection.style.display === 'block') populateInitialDhikrOptions(); 
+            });
+
             acceptBtn.addEventListener("click", function() {
+                console.log("Accept button clicked. welcomeModalLanguage:", welcomeModalLanguage); 
                 appSettings.welcomeShown = true;
-                saveSettings();
-                welcomeModal.style.display = "none";
+                showInitialDhikrSelection();
                 playClickSound();
             });
-            
-            declineBtn.addEventListener("click", function() {
-                alert(appSettings.language === "ar" ? 
-                    "عذراً، يجب الموافقة على الشروط لاستخدام التطبيق" : 
-                    "Sorry, you must accept the terms to use the app");
-                playClickSound();
-            });
-            
-            // أحداث النوافذ المنبثقة (أزرار الإغلاق العامة)
-            // Note: The close button for dhikrModal was changed to closeDhikrModalBtn
-            document.querySelectorAll(".modal .btn:not(#acceptBtn):not(#declineBtn):not(#addCustomDhikrBtn)").forEach(btn => {
-                // Special handling for the new close button in Dhikr modal
-                if (btn.id === "closeDhikrModalBtn" || btn.id === "closeLangBtn" || btn.id === "closeInfoBtn") {
-                    btn.addEventListener("click", function() {
-                        this.closest(".modal").style.display = "none";
-                        playClickSound();
-                    });
-                }
-            });
-            
-            // Event listeners for dynamically created dhikr options are now set in updateDhikrDisplay
-            
+
+            declineBtn.addEventListener("click", () => { alert(appSettings.translations[welcomeModalLanguage].mustAcceptTerms); playClickSound(); });
+
+            document.getElementById("closeDhikrModalBtn").addEventListener("click", () => { dhikrModal.style.display = "none"; playClickSound(); });
+            document.getElementById("closeLangBtn").addEventListener("click", () => { langModal.style.display = "none"; playClickSound(); });
+            document.getElementById("closeInfoBtn").addEventListener("click", () => { infoModal.style.display = "none"; playClickSound(); });
+
             document.querySelectorAll(".lang-option").forEach(option => {
-                option.addEventListener("click", function() {
-                    changeLanguage(this.dataset.lang);
-                    langModal.style.display = "none";
-                });
+                option.addEventListener("click", function() { changeLanguage(this.dataset.lang); langModal.style.display = "none"; });
             });
             
-            // التهيئة الأولية
-            loadSettings();
+            loadSettings(); 
             
-            // محاولة تحميل الصوت عند البدء
-            document.addEventListener("click", function initAudio() {
-                playClickSound();
-                document.removeEventListener("click", initAudio);
-            }, { once: true });
+            function initAudioInteraction() {
+                clickSound.volume = 0.01; 
+                clickSound.play().then(() => {
+                    clickSound.pause(); clickSound.currentTime = 0; clickSound.volume = 1.0;
+                }).catch(e => { clickSound.volume = 1.0; }); 
+                document.removeEventListener('click', initAudioInteraction);
+                document.removeEventListener('touchstart', initAudioInteraction);
+            }
+            document.addEventListener('click', initAudioInteraction, { once: true });
+            document.addEventListener('touchstart', initAudioInteraction, { once: true });
+            console.log("Billion Tasbeeh App Initialized."); 
         });
     </script>
 </body>
